@@ -12,6 +12,7 @@ yarn-error.log
 
 # TypeScript
 *.tsbuildinfo
+*/.tanstack/*
 
 # Logs
 logs/

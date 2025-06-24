@@ -1,16 +1,22 @@
 import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
+import react from "@vitejs/plugin-react";
 import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig } from "vite";
 
 export default defineConfig(({ mode }) => {
   return {
-    plugins: [TanStackRouterVite()],
+    plugins: [TanStackRouterVite(), react()],
     server: {
-      host: true,
+      host: "0.0.0.0", // ←重要: 外部からアクセス可能に
       port: 3000,
+      strictPort: true,
+      watch: {
+        usePolling: true, // ←重要: Dockerではファイル監視にポーリングが必要
+        interval: 100, // オプション: ポーリング間隔（デフォルトより短めに）
+      },
       hmr: {
-        host: "host.docker.internal",
-        protocol: "ws",
+        protocol: "ws", // WebSocketを使用
+        host: "localhost", // または "127.0.0.1" あるいは `"0.0.0.0"`
         port: 3000,
       },
     },

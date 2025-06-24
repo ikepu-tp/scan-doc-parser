@@ -1,7 +1,7 @@
 {
-    "routesDirectory": "./pages",
-    "generatedRouteTree": "./routeTree.gen.ts",
-    "routeFileIgnorePrefix": "-",
-    "quoteStyle": "single",
-    "autoCodeSplitting": true
+  "routesDirectory": "./src/pages",
+  "generatedRouteTree": "./src/routeTree.gen.ts",
+  "routeFileIgnorePrefix": "-",
+  "quoteStyle": "single",
+  "autoCodeSplitting": true
 }
