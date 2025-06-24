@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-# from api.endpoints import upload, analyze, config
+from .api import router
 
 app = FastAPI(
     title="ScanDocParser API",
@@ -18,14 +18,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# エンドポイントルーティング
-"""
-app.include_router(upload.router, prefix="/upload", tags=["Upload"])
-app.include_router(analyze.router, prefix="/analyze", tags=["Analyze"])
-app.include_router(config.router, prefix="/config", tags=["Config"])
-"""
+app.include_router(
+    # APIエンドポイントのインポート
+    router,  # api/__init__.pyで定義されたルーターを使用
+    prefix="/api",
+)
 
 # ルート確認用
 @app.get("/")
 def read_root():
     return {"message": "ScanDocParser API is running."}
+
+@app.get("/api/health")
+def health_check():
+    return {"status": "ok"}
