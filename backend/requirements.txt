@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+pydantic
+pytesseract
+opencv-python
+pillow
+python-multipart
+aiofiles
+concurrent-log-handler

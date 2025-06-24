@@ -31,8 +31,6 @@ project-root/
 ├── .env
 ├── .gitignore
 ├── readme.md
-├── package.json
-├── tsconfig.json
 ├── public/
 ├── frontend/                # React + MUI + react-konva
 │   ├── Dockerfile
@@ -40,6 +38,8 @@ project-root/
 │   ├── pages/           # 各画面ステップ（画像設定・解析など）
 │   ├── services/        # API呼び出し
 │   ├── types/           # 型定義
+│   ├── package.json
+│   ├── tsconfig.json
 │   └── App.tsx
 │
 ├── backend/                 # Python + FastAPI
@@ -85,7 +85,7 @@ git clone https://github.com/ikepu-tp/scan-doc-parser.git
 cd scan-doc-parser
 
 # 2. Dockerコンテナ起動
-docker-compose up --build
+docker-compose up
 ```
 
 > 初回ビルド時は数分かかることがあります。

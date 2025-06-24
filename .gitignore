@@ -1,1 +1,78 @@
-node_modules
+# Node.js
+node_modules/
+dist/
+.vite/
+.yarn/
+.pnp.*
+hot
+
+# Yarn
+yarn-error.log
+.yarnrc.yml
+
+# TypeScript
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+*.pyd
+*.pyo
+*.sqlite3
+*.db
+
+# Virtualenv
+.venv/
+venv/
+
+# FastAPI cache / coverage
+.coverage
+htmlcov/
+.tox/
+.cache/
+.pytest_cache/
+.mypy_cache/
+
+# VSCode settings
+.vscode/
+
+# Docker
+*.pid
+storage/output/
+storage/images/
+storage/map/
+docker-compose.override.yml
+
+# Jupyter Notebook (if used)
+.ipynb_checkpoints/
+
+# IDEs
+.idea/
+*.sw?
+
+# Build artifacts
+build/
+coverage/
+*.tgz
+
+# System files
+Thumbs.db
+ehthumbs.db
