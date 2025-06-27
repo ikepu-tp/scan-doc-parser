@@ -2,6 +2,8 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { Box, Button, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import RectangularSelection from "../components/RectangularSelection";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
@@ -20,19 +22,20 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 function RouteComponent() {
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const [imageObj, setImageObj] = useState<string | undefined>();
+
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>): void {
     if (!e.target.files?.[0]) return;
     const file = e.target.files[0];
-    const formData = new FormData();
-    formData.append("file", file);
-    fetch("/api/upload-sample", {
-      method: "POST",
-      body: formData,
-    })
-      .then((res) => res.json())
-      .then((data) => alert("アップロード完了"))
-      .catch((err) => console.error(err));
-  };
+    setImageObj(URL.createObjectURL(file));
+  }
+
+  if (imageObj)
+    return (
+      <Box p={4}>
+        <RectangularSelection imgSrc={imageObj} />
+      </Box>
+    );
 
   return (
     <Box p={4}>
