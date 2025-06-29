@@ -16,8 +16,6 @@ export default function RectangularSelection(props: RectangularSelectionProps) {
     height: number;
   } | null>(null);
   const stageRef = useRef<any>(null);
-
-  // ドラッグ選択開始座標
   const [isDragging, setIsDragging] = useState(false);
   const startPos = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
@@ -25,61 +23,42 @@ export default function RectangularSelection(props: RectangularSelectionProps) {
     if (!props.imgSrc) return;
     const img = new window.Image();
     img.src = props.imgSrc;
-    img.onload = () => {
-      setImageObj(img);
-    };
+    img.onload = () => setImageObj(img);
   }, [props.imgSrc]);
 
-  // ステージでドラッグ開始
-  const handleMouseDown = (e: any) => {
-    if (!imageObj) return;
+  function handleMouseDown(e: any): void {
+    if (e.target !== e.target.getStage()) return; // 既存オブジェクト選択を無視
     const pos = e.target.getStage().getPointerPosition();
     startPos.current = pos;
-    setNewRect({
-      x: pos.x,
-      y: pos.y,
-      width: 0,
-      height: 0,
-    });
+    setNewRect({ x: pos.x, y: pos.y, width: 0, height: 0 });
     setIsDragging(true);
-  };
+  }
 
-  // ドラッグ中に矩形サイズを更新
-  const handleMouseMove = (e: any) => {
+  function handleMouseMove(e: any): void {
     if (!isDragging || !newRect) return;
     const pos = e.target.getStage().getPointerPosition();
-    const newWidth = pos.x - startPos.current.x;
-    const newHeight = pos.y - startPos.current.y;
     setNewRect({
       x: startPos.current.x,
       y: startPos.current.y,
-      width: newWidth,
-      height: newHeight,
+      width: pos.x - startPos.current.x,
+      height: pos.y - startPos.current.y,
     });
-  };
+  }
 
-  // ドラッグ終了時に矩形をAnswerFieldとして追加
-  const handleMouseUp = () => {
+  function handleMouseUp(): void {
     if (!isDragging || !newRect) return;
     setIsDragging(false);
 
-    // 幅高さは絶対値にする。負の場合はx,yを調整
-    let x = newRect.x;
-    let y = newRect.y;
-    let width = newRect.width;
-    let height = newRect.height;
-
+    let { x, y, width, height } = newRect;
     if (width < 0) {
-      x = x + width;
+      x += width;
       width = Math.abs(width);
     }
     if (height < 0) {
-      y = y + height;
+      y += height;
       height = Math.abs(height);
     }
-
     if (width < 10 || height < 10) {
-      // 小さすぎる矩形は無視
       setNewRect(null);
       return;
     }
@@ -92,9 +71,38 @@ export default function RectangularSelection(props: RectangularSelectionProps) {
       height,
       answerType: "single-select",
     };
-    setAnswerFields([...answerFields, newField]);
+    setAnswerFields((prev) => [...prev, newField]);
     setNewRect(null);
-  };
+  }
+
+  function handleDragMove(index: number, e: any): void {
+    const rect = e.target;
+    const updatedFields = [...answerFields];
+    updatedFields[index] = {
+      ...updatedFields[index],
+      x: rect.x(),
+      y: rect.y(),
+    };
+    setAnswerFields(updatedFields);
+  }
+
+  function handleTransformEnd(index: number, e: any): void {
+    const node = e.target;
+    const scaleX = node.scaleX();
+    const scaleY = node.scaleY();
+    node.scaleX(1);
+    node.scaleY(1);
+
+    const updatedFields = [...answerFields];
+    updatedFields[index] = {
+      ...updatedFields[index],
+      x: node.x(),
+      y: node.y(),
+      width: Math.max(10, node.width() * scaleX),
+      height: Math.max(10, node.height() * scaleY),
+    };
+    setAnswerFields(updatedFields);
+  }
 
   return (
     <Box sx={{ padding: 2 }}>
@@ -125,9 +133,7 @@ export default function RectangularSelection(props: RectangularSelectionProps) {
                 width={800}
                 height={600}
                 listening={false}
-                perfectDrawEnabled={false}
               />
-              {/* 選択中の矩形 */}
               {newRect && (
                 <Rect
                   x={newRect.x}
@@ -139,8 +145,7 @@ export default function RectangularSelection(props: RectangularSelectionProps) {
                   strokeWidth={2}
                 />
               )}
-              {/* 設定済み回答欄 */}
-              {answerFields.map((field) => (
+              {answerFields.map((field, idx) => (
                 <Rect
                   key={field.id}
                   x={field.x}
@@ -149,6 +154,9 @@ export default function RectangularSelection(props: RectangularSelectionProps) {
                   height={field.height}
                   stroke="red"
                   strokeWidth={2}
+                  draggable
+                  onDragEnd={(e) => handleDragMove(idx, e)}
+                  onTransformEnd={(e) => handleTransformEnd(idx, e)}
                 />
               ))}
             </Layer>
@@ -158,25 +166,15 @@ export default function RectangularSelection(props: RectangularSelectionProps) {
 
       <Box sx={{ mt: 2 }}>
         <Typography variant="subtitle1">設定済み回答欄一覧</Typography>
-        {answerFields.length === 0 && (
-          <Typography>まだ回答欄が設定されていません。</Typography>
-        )}
         {answerFields.map((field) => (
           <Box
             key={field.id}
-            sx={{
-              border: "1px solid #ccc",
-              p: 1,
-              mb: 1,
-              borderRadius: 1,
-              backgroundColor: "#f9f9f9",
-            }}
+            sx={{ border: "1px solid #ccc", p: 1, mb: 1, borderRadius: 1 }}
           >
             <Typography>
               {field.id} - {Math.round(field.x)}, {Math.round(field.y)} /{" "}
               {Math.round(field.width)} x {Math.round(field.height)}
             </Typography>
-            <Typography>回答方式：単一選択</Typography>
           </Box>
         ))}
       </Box>
