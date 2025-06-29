@@ -21,7 +21,7 @@ services:
       - "8000:8000"
     volumes:
       - ./:/app
-      - ./storage:/app/storage
+      - ./storage:/app/backend/storage
       - ./backend:/app/backend
     environment:
       - PYTHONUNBUFFERED=1
