@@ -47,7 +47,7 @@ function RouteComponent() {
       answerFields: answerFieldsRef.current,
     });
     if (res.result === "success") {
-      navigate({ to: "/upload" });
+      navigate({ to: `/config/${res.data?.configId}/upload` });
     } else {
       alert(`エラーが発生しました: ${res.error || res.message}`);
     }

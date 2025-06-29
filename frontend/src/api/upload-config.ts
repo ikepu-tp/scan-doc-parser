@@ -17,7 +17,7 @@ export default async function uploadConfig(
 
   let result: Response<uploadConfigResource> = { result: "error" };
   try {
-    const res = await axios.post("/upload-config", formData);
+    const res = await axios.post("/config", formData);
     result = res.data;
   } catch (error) {
     result["message"] = "Failed to upload config";

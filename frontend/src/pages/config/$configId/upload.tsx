@@ -3,10 +3,11 @@ import { Box, Button, Paper, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { createFileRoute } from "@tanstack/react-router";
 import { ChangeEvent, useState } from "react";
-import uploadImage from "./../api/upload-images";
+import uploadImage from "~/api/upload-images";
 
-export const Route = createFileRoute("/upload")({
+export const Route = createFileRoute("/config/$configId/upload")({
   component: RouteComponent,
+  loader: ({ params }) => params,
 });
 
 const VisuallyHiddenInput = styled("input")({
@@ -23,6 +24,7 @@ const VisuallyHiddenInput = styled("input")({
 
 function RouteComponent() {
   const [imageObj, setImageObj] = useState<File[]>([]);
+  const { configId } = Route.useLoaderData();
 
   function handleUpload(e: ChangeEvent<HTMLInputElement>): void {
     if (!e.target.files) return;
@@ -35,7 +37,7 @@ function RouteComponent() {
       return;
     }
     const res = await uploadImage({
-      configId: "dummy-config-id", // ここは実際のconfigIdに置き換える必要があります
+      configId,
       images: imageObj,
     });
     if (res.result === "success") {
