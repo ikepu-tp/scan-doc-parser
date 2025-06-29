@@ -9,6 +9,7 @@ import RectangularSelectedArea from "./SelectedArea";
 
 export type RectangularSelectionProps = {
   imgSrc?: string; // 画像の初期ソース
+  updateAnswerFields: (fields: AnswerField[]) => void; // 親コンポーネントへのコールバック
 };
 export default function RectangularSelection(props: RectangularSelectionProps) {
   const [imageObj, setImageObj] = useState<HTMLImageElement | null>(null);
@@ -38,6 +39,9 @@ export default function RectangularSelection(props: RectangularSelectionProps) {
       });
     };
   }, [props.imgSrc]);
+  useEffect(() => {
+    if (imageObj) props.updateAnswerFields(answerFields);
+  }, [answerFields]);
 
   function handleMouseDown(e: Konva.KonvaEventObject<MouseEvent>): void {
     if (e.target !== e.target.getStage()) return; // 既存オブジェクト選択を無視
