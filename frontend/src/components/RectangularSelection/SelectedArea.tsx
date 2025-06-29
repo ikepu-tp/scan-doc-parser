@@ -1,6 +1,6 @@
 import Konva from "konva";
 import { Rect } from "react-konva";
-import { AnswerField, updateAnswerField } from "../utils/types";
+import { AnswerField, updateAnswerField } from "~/utils/types";
 
 export type RectangularSelectedAreaProps = {
   field: AnswerField;

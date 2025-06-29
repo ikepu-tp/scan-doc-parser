@@ -3,8 +3,8 @@ import Konva from "konva";
 import { Vector2d } from "konva/lib/types";
 import { useEffect, useRef, useState } from "react";
 import { Image as KonvaImage, Layer, Rect, Stage } from "react-konva";
-import { AnswerField } from "../utils/types";
-import RectangularSelectedArea from "./RectangularSelectedArea";
+import { AnswerField } from "~/utils/types";
+import RectangularSelectedArea from "./SelectedArea";
 
 export type RectangularSelectionProps = {
   imgSrc?: string; // 画像の初期ソース
