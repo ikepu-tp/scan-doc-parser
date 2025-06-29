@@ -3,6 +3,7 @@ import { Box, Button, Paper, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { createFileRoute } from "@tanstack/react-router";
 import { ChangeEvent, useState } from "react";
+import uploadImage from "./../api/upload-images";
 
 export const Route = createFileRoute("/upload")({
   component: RouteComponent,
@@ -27,6 +28,22 @@ function RouteComponent() {
     if (!e.target.files) return;
     const files = Array.from(e.target.files);
     setImageObj((prev) => [...prev, ...files]);
+  }
+  async function handleSubmit(): Promise<void> {
+    if (imageObj.length === 0) {
+      alert("画像が選択されていません。");
+      return;
+    }
+    const res = await uploadImage({
+      configId: "dummy-config-id", // ここは実際のconfigIdに置き換える必要があります
+      images: imageObj,
+    });
+    if (res.result === "success") {
+      alert("画像のアップロードが成功しました。");
+      setImageObj([]); // アップロード後に画像リストをクリア
+    } else {
+      alert(`アップロードに失敗しました: ${res.error || res.message}`);
+    }
   }
 
   return (
@@ -69,6 +86,17 @@ function RouteComponent() {
               </Typography>
             </Box>
           ))}
+          <Box>
+            <Button
+              variant="contained"
+              type="button"
+              onClick={handleSubmit}
+              sx={{ mt: 2 }}
+              disabled={imageObj.length === 0}
+            >
+              アップロード
+            </Button>
+          </Box>
         </Paper>
       )}
     </Box>
