@@ -5,6 +5,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { AnswerField } from "~/utils/types";
 import RectangularSelection from "../components/RectangularSelection";
+import uploadConfig from "./../api/upload-config";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
@@ -38,11 +39,12 @@ function RouteComponent() {
     answerFieldsRef.current = fields;
   }
 
-  function handleFileUpload(): void {
+  async function handleFileUpload(): Promise<void> {
     if (!imageRef.current) return;
-    const formData = new FormData();
-    formData.append("image", imageRef.current);
-    formData.append("answerFields", JSON.stringify(answerFieldsRef.current));
+    const res = await uploadConfig({
+      image: imageRef.current,
+      answerFields: answerFieldsRef.current,
+    });
   }
 
   if (imageObj)

@@ -8,3 +8,9 @@ export type AnswerField = {
   answerType: AnswerType;
 };
 export type updateAnswerField = (index: number, field: AnswerField) => void;
+export type Response = {
+  result: "success" | "error";
+  message?: string;
+  data?: any;
+  error?: string;
+};
