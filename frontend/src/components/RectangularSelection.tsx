@@ -4,6 +4,7 @@ import { Vector2d } from "konva/lib/types";
 import { useEffect, useRef, useState } from "react";
 import { Image as KonvaImage, Layer, Rect, Stage } from "react-konva";
 import { AnswerField } from "../utils/types";
+import RectangularSelectedArea from "./RectangularSelectedArea";
 
 export type RectangularSelectionProps = {
   imgSrc?: string; // 画像の初期ソース
@@ -78,14 +79,9 @@ export default function RectangularSelection(props: RectangularSelectionProps) {
     setNewRect(null);
   }
 
-  function handleDragMove(index: number, e: any): void {
-    const rect = e.target;
+  function updateAnswerField(index: number, field: AnswerField): void {
     const updatedFields = [...answerFields];
-    updatedFields[index] = {
-      ...updatedFields[index],
-      x: rect.x(),
-      y: rect.y(),
-    };
+    updatedFields[index] = field;
     setAnswerFields(updatedFields);
   }
 
@@ -131,16 +127,11 @@ export default function RectangularSelection(props: RectangularSelectionProps) {
                 />
               )}
               {answerFields.map((field, idx) => (
-                <Rect
+                <RectangularSelectedArea
                   key={field.id}
-                  x={field.x}
-                  y={field.y}
-                  width={field.width}
-                  height={field.height}
-                  stroke="red"
-                  strokeWidth={2}
-                  draggable
-                  onDragEnd={(e) => handleDragMove(idx, e)}
+                  field={field}
+                  idx={idx}
+                  updateAnswerField={updateAnswerField}
                 />
               ))}
             </Layer>
