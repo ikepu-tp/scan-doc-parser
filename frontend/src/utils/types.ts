@@ -1,9 +1,10 @@
+export type AnswerType = "single-select" | "multi-select" | "text";
 export type AnswerField = {
   id: string;
   x: number;
   y: number;
   width: number;
   height: number;
-  answerType: "single-select"; // 今回は単一選択に固定
+  answerType: AnswerType;
 };
 export type updateAnswerField = (index: number, field: AnswerField) => void;

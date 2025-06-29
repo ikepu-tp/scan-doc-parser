@@ -1,4 +1,12 @@
-import { Box, TextField } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TextField,
+} from "@mui/material";
 import { AnswerField, updateAnswerField } from "~/utils/types";
 
 export type AnswerFieldItemProps = {
@@ -7,6 +15,15 @@ export type AnswerFieldItemProps = {
   updateAnswerField: updateAnswerField;
 };
 export default function AnswerFieldItem(props: AnswerFieldItemProps) {
+  function handleChangeAnswerType(
+    e: SelectChangeEvent<"text" | "single-select" | "multi-select">,
+  ): void {
+    const updatedField: AnswerField = {
+      ...props.field,
+      answerType: e.target.value as "text" | "single-select" | "multi-select",
+    };
+    props.updateAnswerField(props.idx, updatedField);
+  }
   function handleChange(e: React.ChangeEvent<HTMLInputElement>): void {
     const value = parseFloat(e.target.value);
     if (isNaN(value)) return;
@@ -47,6 +64,24 @@ export default function AnswerFieldItem(props: AnswerFieldItemProps) {
         value={props.field.height}
         onChange={handleChange}
       />
+      <FormControl>
+        <InputLabel
+          id={`answer-field_type-form_field-id-${props.field.id}-label`}
+        >
+          回答方式
+        </InputLabel>
+        <Select
+          labelId={`answer-field_type-form_field-id-${props.field.id}-label`}
+          id={`answer-field_type-form_field-id-${props.field.id}-select`}
+          value={props.field.answerType}
+          label="回答方式"
+          onChange={handleChangeAnswerType}
+        >
+          <MenuItem value="single-select">単一選択</MenuItem>
+          <MenuItem value="multi-select">複数選択</MenuItem>
+          <MenuItem value="text">テキスト</MenuItem>
+        </Select>
+      </FormControl>
     </Box>
   );
 }
