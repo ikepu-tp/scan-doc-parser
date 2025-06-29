@@ -12,6 +12,9 @@ export type RectangularSelectionProps = {
 };
 export default function RectangularSelection(props: RectangularSelectionProps) {
   const [imageObj, setImageObj] = useState<HTMLImageElement | null>(null);
+  const [stageSize, setStageSize] = useState<{ width: number; height: number }>(
+    { width: 800, height: 600 },
+  );
   const [answerFields, setAnswerFields] = useState<AnswerField[]>([]);
   const [newRect, setNewRect] = useState<{
     x: number;
@@ -19,15 +22,21 @@ export default function RectangularSelection(props: RectangularSelectionProps) {
     width: number;
     height: number;
   } | null>(null);
-  const stageRef = useRef<any>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const stageRef = useRef<any>(null);
   const startPos = useRef<Vector2d>({ x: 0, y: 0 });
 
   useEffect(() => {
     if (!props.imgSrc) return;
     const img = new window.Image();
     img.src = props.imgSrc;
-    img.onload = () => setImageObj(img);
+    img.onload = () => {
+      setImageObj(img);
+      setStageSize({
+        width: img.naturalWidth,
+        height: img.naturalHeight,
+      });
+    };
   }, [props.imgSrc]);
 
   function handleMouseDown(e: Konva.KonvaEventObject<MouseEvent>): void {
@@ -102,8 +111,8 @@ export default function RectangularSelection(props: RectangularSelectionProps) {
       >
         {imageObj && (
           <Stage
-            width={800}
-            height={600}
+            width={stageSize.width}
+            height={stageSize.height}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
@@ -112,8 +121,8 @@ export default function RectangularSelection(props: RectangularSelectionProps) {
             <Layer>
               <KonvaImage
                 image={imageObj}
-                width={800}
-                height={600}
+                width={stageSize.width}
+                height={stageSize.height}
                 listening={false}
               />
               {newRect && (
