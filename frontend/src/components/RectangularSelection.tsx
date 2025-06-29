@@ -1,4 +1,6 @@
 import { Box, Typography } from "@mui/material";
+import Konva from "konva";
+import { Vector2d } from "konva/lib/types";
 import { useEffect, useRef, useState } from "react";
 import { Image as KonvaImage, Layer, Rect, Stage } from "react-konva";
 import { AnswerField } from "../utils/types";
@@ -17,7 +19,7 @@ export default function RectangularSelection(props: RectangularSelectionProps) {
   } | null>(null);
   const stageRef = useRef<any>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const startPos = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const startPos = useRef<Vector2d>({ x: 0, y: 0 });
 
   useEffect(() => {
     if (!props.imgSrc) return;
@@ -26,17 +28,18 @@ export default function RectangularSelection(props: RectangularSelectionProps) {
     img.onload = () => setImageObj(img);
   }, [props.imgSrc]);
 
-  function handleMouseDown(e: any): void {
+  function handleMouseDown(e: Konva.KonvaEventObject<MouseEvent>): void {
     if (e.target !== e.target.getStage()) return; // 既存オブジェクト選択を無視
     const pos = e.target.getStage().getPointerPosition();
-    startPos.current = pos;
-    setNewRect({ x: pos.x, y: pos.y, width: 0, height: 0 });
+    startPos.current = pos || { x: 0, y: 0 };
+    setNewRect({ ...startPos.current, width: 0, height: 0 });
     setIsDragging(true);
   }
 
-  function handleMouseMove(e: any): void {
+  function handleMouseMove(e: Konva.KonvaEventObject<MouseEvent>): void {
     if (!isDragging || !newRect) return;
-    const pos = e.target.getStage().getPointerPosition();
+    const pos = e.target.getStage()?.getPointerPosition();
+    if (!pos) return;
     setNewRect({
       x: startPos.current.x,
       y: startPos.current.y,
@@ -82,24 +85,6 @@ export default function RectangularSelection(props: RectangularSelectionProps) {
       ...updatedFields[index],
       x: rect.x(),
       y: rect.y(),
-    };
-    setAnswerFields(updatedFields);
-  }
-
-  function handleTransformEnd(index: number, e: any): void {
-    const node = e.target;
-    const scaleX = node.scaleX();
-    const scaleY = node.scaleY();
-    node.scaleX(1);
-    node.scaleY(1);
-
-    const updatedFields = [...answerFields];
-    updatedFields[index] = {
-      ...updatedFields[index],
-      x: node.x(),
-      y: node.y(),
-      width: Math.max(10, node.width() * scaleX),
-      height: Math.max(10, node.height() * scaleY),
     };
     setAnswerFields(updatedFields);
   }
@@ -156,7 +141,6 @@ export default function RectangularSelection(props: RectangularSelectionProps) {
                   strokeWidth={2}
                   draggable
                   onDragEnd={(e) => handleDragMove(idx, e)}
-                  onTransformEnd={(e) => handleTransformEnd(idx, e)}
                 />
               ))}
             </Layer>
