@@ -1,4 +1,4 @@
-export type AnswerType = "single-select" | "multi-select" | "text";
+export type AnswerType = "single-select" | "text";
 export type AnswerField = {
   id: string;
   x: number;

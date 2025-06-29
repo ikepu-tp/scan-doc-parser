@@ -7,7 +7,7 @@ import {
   SelectChangeEvent,
   TextField,
 } from "@mui/material";
-import { AnswerField, updateAnswerField } from "~/utils/types";
+import { AnswerField, AnswerType, updateAnswerField } from "~/utils/types";
 
 export type AnswerFieldItemProps = {
   field: AnswerField;
@@ -15,12 +15,10 @@ export type AnswerFieldItemProps = {
   updateAnswerField: updateAnswerField;
 };
 export default function AnswerFieldItem(props: AnswerFieldItemProps) {
-  function handleChangeAnswerType(
-    e: SelectChangeEvent<"text" | "single-select" | "multi-select">,
-  ): void {
+  function handleChangeAnswerType(e: SelectChangeEvent<AnswerType>): void {
     const updatedField: AnswerField = {
       ...props.field,
-      answerType: e.target.value as "text" | "single-select" | "multi-select",
+      answerType: e.target.value as AnswerType,
     };
     props.updateAnswerField(props.idx, updatedField);
   }
@@ -78,7 +76,6 @@ export default function AnswerFieldItem(props: AnswerFieldItemProps) {
           onChange={handleChangeAnswerType}
         >
           <MenuItem value="single-select">単一選択</MenuItem>
-          <MenuItem value="multi-select">複数選択</MenuItem>
           <MenuItem value="text">テキスト</MenuItem>
         </Select>
       </FormControl>

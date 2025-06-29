@@ -10,17 +10,11 @@
 
 import { Route as rootRouteImport } from './pages/__root'
 import { Route as UploadRouteImport } from './pages/upload'
-import { Route as ConfigRouteImport } from './pages/config'
 import { Route as IndexRouteImport } from './pages/index'
 
 const UploadRoute = UploadRouteImport.update({
   id: '/upload',
   path: '/upload',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ConfigRoute = ConfigRouteImport.update({
-  id: '/config',
-  path: '/config',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -31,31 +25,27 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/config': typeof ConfigRoute
   '/upload': typeof UploadRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/config': typeof ConfigRoute
   '/upload': typeof UploadRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/config': typeof ConfigRoute
   '/upload': typeof UploadRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/config' | '/upload'
+  fullPaths: '/' | '/upload'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/config' | '/upload'
-  id: '__root__' | '/' | '/config' | '/upload'
+  to: '/' | '/upload'
+  id: '__root__' | '/' | '/upload'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ConfigRoute: typeof ConfigRoute
   UploadRoute: typeof UploadRoute
 }
 
@@ -66,13 +56,6 @@ declare module '@tanstack/react-router' {
       path: '/upload'
       fullPath: '/upload'
       preLoaderRoute: typeof UploadRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/config': {
-      id: '/config'
-      path: '/config'
-      fullPath: '/config'
-      preLoaderRoute: typeof ConfigRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -87,7 +70,6 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ConfigRoute: ConfigRoute,
   UploadRoute: UploadRoute,
 }
 export const routeTree = rootRouteImport
