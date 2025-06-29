@@ -4,6 +4,7 @@ import { Vector2d } from "konva/lib/types";
 import { useEffect, useRef, useState } from "react";
 import { Image as KonvaImage, Layer, Rect, Stage } from "react-konva";
 import { AnswerField } from "~/utils/types";
+import AnswerFieldsList from "./AnswerFieldsList";
 import RectangularSelectedArea from "./SelectedArea";
 
 export type RectangularSelectionProps = {
@@ -141,17 +142,10 @@ export default function RectangularSelection(props: RectangularSelectionProps) {
 
       <Box sx={{ mt: 2 }}>
         <Typography variant="subtitle1">設定済み回答欄一覧</Typography>
-        {answerFields.map((field) => (
-          <Box
-            key={field.id}
-            sx={{ border: "1px solid #ccc", p: 1, mb: 1, borderRadius: 1 }}
-          >
-            <Typography>
-              {field.id} - {Math.round(field.x)}, {Math.round(field.y)} /{" "}
-              {Math.round(field.width)} x {Math.round(field.height)}
-            </Typography>
-          </Box>
-        ))}
+        <AnswerFieldsList
+          answerFields={answerFields}
+          updateAnswerField={updateAnswerField}
+        />
       </Box>
     </Box>
   );
