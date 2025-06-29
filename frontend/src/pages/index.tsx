@@ -1,7 +1,7 @@
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { Box, Button, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { AnswerField } from "~/utils/types";
 import RectangularSelection from "../components/RectangularSelection";
@@ -27,6 +27,7 @@ function RouteComponent() {
   const [imageObj, setImageObj] = useState<string | undefined>();
   const imageRef = useRef<File | null>(null);
   const answerFieldsRef = useRef<AnswerField[]>([]);
+  const navigate = useNavigate();
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>): void {
     if (!e.target.files?.[0]) return;
@@ -45,6 +46,11 @@ function RouteComponent() {
       image: imageRef.current,
       answerFields: answerFieldsRef.current,
     });
+    if (res.result === "success") {
+      navigate({ to: "/upload" });
+    } else {
+      alert(`エラーが発生しました: ${res.error || res.message}`);
+    }
   }
 
   if (imageObj)
